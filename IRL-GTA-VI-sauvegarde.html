@@ -1,0 +1,215 @@
+<!-- SAUVEGARDE IRL GTA VI. Pour restaurer : envoie ce fichier à Claude et dis "republie cette app". Ce fichier contient le jeu (règles, XP, badges, rangs), pas ta progression. -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IRL GTA VI</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mut:#74726b;--bd:#e4e2da;--bar:#6a5acd;--neg:#d6453d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--card:#222226;--tx:#f0efe9;--mut:#9a98a0;--bd:#33333a;--bar:#8f82f0;--neg:#ff7a70}}
+:root[data-theme="dark"]{--bg:#17171a;--card:#222226;--tx:#f0efe9;--mut:#9a98a0;--bd:#33333a;--bar:#8f82f0;--neg:#ff7a70}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0 auto;background:var(--bg);color:var(--tx);font-family:-apple-system,system-ui,"Segoe UI",sans-serif;padding:16px;max-width:520px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px}
+h1{font-size:20px;margin:4px 0 12px}
+.lvl{display:flex;justify-content:space-between;align-items:baseline}
+.lvl b{font-size:24px}
+.mut{color:var(--mut);font-size:13px}
+.track{height:12px;background:var(--bd);border-radius:6px;overflow:hidden;margin:10px 0 6px}
+.fill{height:100%;background:var(--bar);width:0;transition:width .3s}
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bd)}
+.dot{font-size:18px}
+.nm{flex:1;font-size:15px}
+.nm small{display:block;color:var(--mut);font-size:12px}
+.nm small.neg,.neg{color:var(--neg)}
+.ctl{display:flex;align-items:center;gap:8px}
+button{font:inherit;border:1px solid var(--bd);background:var(--bg);color:var(--tx);width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer}
+.n{min-width:22px;text-align:center;font-weight:600}
+.big{width:auto;padding:0 14px;font-size:14px;height:36px}
+.tot{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:4px}
+.chip{width:auto;height:34px;padding:0 12px;font-size:14px;white-space:nowrap;border-radius:17px;flex:none}
+.chip.on{background:var(--bar);color:#fff;border-color:var(--bar)}
+.hd{font-weight:600;font-size:14px;padding:12px 0 4px}
+.hd:first-child{padding-top:0}
+.bw{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin-top:4px}
+.bw i{display:block;height:100%;background:var(--bar)}
+.bw i.r{background:var(--neg)}
+.med{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:46px;border-radius:50%;font-size:20px;margin-right:6px;border:2px solid var(--bd);opacity:.3;filter:grayscale(1)}
+.med small{font-size:9px;font-weight:700}
+.med.on{opacity:1;filter:none;color:#1d1d1b}
+.t0.on{background:linear-gradient(135deg,#d99a6c,#a8643a);border-color:#8a4f2b}
+.t1.on{background:linear-gradient(135deg,#f2f4f7,#a9b2bd);border-color:#8c96a3}
+.t2.on{background:linear-gradient(135deg,#fff1a8,#e6b422);border-color:#b8860b;box-shadow:0 0 8px #e6b42288}
+.t3.on{background:linear-gradient(135deg,#d8f6ff,#6cc4e8);border-color:#2a8db5;box-shadow:0 0 12px #6cc4e8cc}
+.t4.on{background:linear-gradient(135deg,#ff6ec7,#ffd36e,#6effb8,#6ec1ff);background-size:300% 300%;animation:h 3s linear infinite;border-color:#fff;box-shadow:0 0 16px #c77dffcc}
+@keyframes h{0%{background-position:0 0}100%{background-position:300% 300%}}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tab{flex:1;width:auto;font-size:13px;height:38px}
+.tab.on{background:var(--bar);color:#fff;border-color:var(--bar)}
+.seg{display:flex;gap:6px;margin-bottom:6px}
+.seg button{width:auto;height:28px;font-size:12px;padding:0 10px;border-radius:14px}
+.seg button.on{background:var(--bar);color:#fff;border-color:var(--bar)}
+</style>
+</head>
+<body>
+<h1>🎮 IRL GTA VI</h1>
+<div class="card" id="head"></div>
+<div class="tabs" id="tabs"></div>
+<div id="view"></div>
+<script>
+var CATS=[["P","🔥 Petits pas"],["E","📚 Travail"],["S","💪 Santé"],["M","🏠 Maison"],["C","🧠 Esprit"],["R","👫 Relations"],["F","💰 Finances"]];
+var RAW=[
+"pgroup|🎯|Petit truc repoussé réglé|5|P|RDV, courrier, formulaire, papiers, retour colis, se lancer, reprendre après une pause","pmail|✉️|Répondre à un message en retard|4|P","ptel|📞|Coup de fil repoussé|6|P","pmoy|🧗|Truc évité, taille moyenne|20|P","evite|🏆|Gros truc évité depuis longtemps|50|P","proc|🛋️|Remettre à plus tard (petit)|-2|P","procm|🐌|Procrastiner 1 h|-3|P",
+"cned|📚|1 h de travail|15|E","lire|📖|Lire 10 pages|10|E","epomo|🍅|25 min concentré sans téléphone|6|E","edev|📄|Rendre un devoir|30|E","cnedsaute|🛑|Journée de travail sautée|-130|E|Une grosse faute : elle efface une journée de travail entière","ewait|⏳|Reporter un devoir|-5|E",
+"sport|🏋️|Séance de sport|30|S","marche|🚶|Marche 30 min|10|S","etire|🤸|Étirements 10 min|5|S","air|☀️|Sortir prendre l’air 15 min|5|S","eau|💧|Boire 2 L d’eau|5|S","repas|🥗|Repas équilibré|5|S","fruit|🍎|Fruits / légumes|4|S","repos|😴|Repos / dodo à l’heure|10|S","douche|🚿|Routine du matin|3|S","dents|🪥|Dents matin et soir|3|S","grignot|🍔|Grignotage / fast-food|-5|S","tard|🌃|Coucher après 2 h|-8|S","cigal|🚬|Cigarette / alcool|-5|S","sucre|🍬|Excès de sucre|-3|S","scroll|📱|1 h de scroll|-5|S","jeu|🎮|Plus de 3 h de jeu / séries|-5|S",
+"menage|🧹|Tâche ménagère|5|M","bazar|🧦|Vaisselle / chambre qui traîne|-3|M",
+"medit|🧘|Méditation / respiration 10 min|8|C","journal|✍️|Journal / gratitude|5|C","jeuok|🕹️|Temps de jeu respecté (1 h)|8|C","cri|😤|Énervement / crier|-3|C",
+"appel|☎️|Appeler un proche|8|R","calme|🤝|Discussion calme|10|R","rmsg|💌|Prendre des nouvelles par message|4|R","merci|😊|Dire merci / un compliment|3|R","dispute|💢|Dispute|-5|R","retard|⏰|Retard / rendez-vous manqué|-5|R","promesse|💬|Promesse non tenue|-5|R","ghost|👻|Ignorer un message important|-3|R",
+"budget|📊|Suivre son budget|8|F","admin|📄|Démarche administrative|15|F","nospend|🚫|Journée sans dépense inutile|8|F","epargne|🏦|Mettre de côté|10|F","achat|🛍️|Achat impulsif|-10|F"
+];
+var ITEMS=RAW.map(function(r){var p=r.split("|");return{id:p[0],e:p[1],n:p[2],x:+p[3],c:p[4],s:p[5]||""}});
+var cn=function(c,i){return c[i]||0};
+var BON=[
+["2 séances de sport","🏋️",15,function(c){return cn(c,"sport")>=2}],
+["3 tâches ménagères","🧹",10,function(c){return cn(c,"menage")>=3}],
+["3 trucs repoussés réglés","🎯",10,function(c){return cn(c,"pgroup")>=3}],
+["Bases du corps : repas + eau + dodo","🛡️",10,function(c){return cn(c,"repas")&&cn(c,"eau")&&cn(c,"repos")}],
+["Journée propre : 4 apports, 0 retrait","✨",10,function(c){var a=0,n=0;ITEMS.forEach(function(i){var v=cn(c,i.id);if(i.x>0)a+=v;else n+=v});return a>=4&&n===0}],
+["Touche-à-tout : 4 catégories","🌈",15,function(c){var s={};ITEMS.forEach(function(i){if(i.x>0&&cn(c,i.id))s[i.c]=1});return Object.keys(s).length>=4}]
+];
+var SK=[
+["Discipline","🎓","Le Stagiaire Zen",["cned","epomo","edev","cnedsaute","ewait"]],
+["Anti-procrastination","🎯","Le Chasseur de To-Do",["pgroup","pmail","ptel","pmoy","evite","proc","procm"]],
+["Forme","💪","Le Gladiateur",["sport","marche","etire","air"]],
+["Hygiène de vie","🛡️","Le Gardien du Sommeil",["repos","eau","repas","fruit","douche","dents","tard","grignot","sucre"]],
+["Ordre","🧹","Le Maître du Plumeau",["menage","bazar"]],
+["Calme","🧘","Le Sage",["calme","medit","journal","cri","dispute"]],
+["Social","🤝","Le Diplomate",["appel","rmsg","merci","retard","promesse","ghost"]],
+["Finances","💰","Le Trésorier",["budget","admin","nospend","epargne","achat"]],
+["Savoir","📖","Le Rat de Bibliothèque",["lire","cned"]],
+["Maîtrise de soi","🔒","Le Moine Inflexible",["jeuok","scroll","jeu","cigal"]]
+];
+var BAD=[
+["Plumeau & co","🧹",["menage"],[10,50,100,500,1000],["Apprenti Plumeau","Seigneur de la Serpillière","Roi du Balai","Archimage de l’Aspirateur","Divinité du Détartrant"]],
+["Sportif","🏋️",["sport"],[5,25,100,300,1000],["Échauffé du Dimanche","Sueur Certifiée","Machine à Squats","Titan du Gainage","Zeus des Haltères"]],
+["Travail","📚",["cned"],[10,50,200,500,1000],["Stylo Motivé","Cerveau en Chauffe","Rat de Bibliothèque","Maître des Chapitres","Gourou du Travail"]],
+["Courage","🎯",["pgroup","pmail","ptel","pmoy","evite"],[5,25,100,250,500],["Pas Si Paresseux","Chasseur de To-Do","Tueur de Procrastination","Sniper du Dossier","Maître du Temps"]],
+["Lecteur","📖",["lire"],[5,25,100,300,1000],["Marque-page Fidèle","Dévoreur de Chapitres","Bibliothécaire Fou","Gardien du Savoir","Dieu des Pages"]],
+["Zen","🤝",["calme"],[5,25,100,300,1000],["Respiration Profonde","Négociateur Cool","Ministre de la Paix","Moine Imperturbable","Bouddha du Quotidien"]]
+];
+var RANKS=[[1,"Novice","🌱"],[3,"Bronze","🥉"],[6,"Argent","🥈"],[10,"Or","🥇"],[15,"Platine","💠"],[22,"Diamant","💎"],[30,"Maître","👑"],[40,"Légende","🔥"]];
+var CAT="all",TAB="play",GM="d",S={};
+var G=100;function load(){try{S=JSON.parse(localStorage.getItem("xp1")||"{}")}catch(e){S={}}try{G=+localStorage.getItem("xpg")||100}catch(e){}}
+function save(){try{localStorage.setItem("xp1",JSON.stringify(S))}catch(e){}}
+function key(d){var p=function(n){return(n<10?"0":"")+n};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())}
+var today=key(new Date());
+function bon(c){var s=0;BON.forEach(function(b){if(b[3](c))s+=b[2]});return s}
+function pos(c){var p=bon(c);ITEMS.forEach(function(i){if(i.x>0)p+=i.x*cn(c,i.id)});return p}
+function neg(c){var n=0;ITEMS.forEach(function(i){if(i.x<0)n+=i.x*cn(c,i.id)});return n}
+function calc(){
+  var ds=Object.keys(S).sort(),streak=0,maxS=0,prev=null,prevB=0,total=0,cur=0,tr=0,by={},T={};
+  ds.forEach(function(d){
+    var c=S[d];ITEMS.forEach(function(i){T[i.id]=(T[i.id]||0)+cn(c,i.id)});
+    var p=pos(c),n=neg(c),b=p+n;
+    if(b===0&&d===today)return;
+    var gap=prev?Math.round((new Date(d)-new Date(prev))/864e5):0;
+    var rb=(prev&&b>0&&(prevB<=0||gap>1))?15:0;
+    streak=b>0?((prev&&gap===1&&prevB>0)?streak+1:1):0;
+    maxS=Math.max(maxS,streak);
+    var m=b>0?1+0.1*Math.min(streak-1,10):1;
+    var x=Math.round((b>0?p+rb:p)*m)+n;
+    total=Math.max(0,total+x);by[d]=x;
+    if(d===today){cur=x;tr=rb}
+    prev=d;prevB=b;
+  });
+  return{total:total,streak:streak,maxS:maxS,cur:cur,rb:tr,mult:1+0.1*Math.min(Math.max(streak-1,0),10),by:by,T:T};
+}
+function th(n){return 50*n*(n+1)}
+function sumIds(T,ids){var s=0;ids.forEach(function(i){s+=T[i]||0});return s}
+function buckets(by){
+  var out=[],now=new Date(today+"T12:00:00"),i,j,d;
+  if(GM==="d"){for(i=13;i>=0;i--){d=new Date(now);d.setDate(d.getDate()-i);out.push({l:"DLMMJVS"[d.getDay()],v:Math.max(0,by[key(d)]||0)})}}
+  else if(GM==="w"){for(i=7;i>=0;i--){d=new Date(now);d.setDate(d.getDate()-((d.getDay()+6)%7)-7*i);var v=0,st=new Date(d);for(j=0;j<7;j++){v+=Math.max(0,by[key(d)]||0);d.setDate(d.getDate()+1)}out.push({l:st.getDate()+"/"+(st.getMonth()+1),v:v})}}
+  else{var M=["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];for(i=5;i>=0;i--){d=new Date(now.getFullYear(),now.getMonth()-i,1);var pf=key(d).slice(0,7),v2=0;Object.keys(by).forEach(function(k){if(k.indexOf(pf)===0)v2+=Math.max(0,by[k])});out.push({l:M[d.getMonth()],v:v2})}}
+  return out;
+}
+function chart(by){
+  var b=buckets(by),mx=1,mi=0,tot=0;
+  b.forEach(function(o,i){tot+=o.v;if(o.v>mx){mx=o.v;mi=i}});
+  var w=300/b.length,s='<svg viewBox="0 0 300 96" width="100%">';
+  b.forEach(function(o,i){var h=o.v/mx*60;
+    s+='<rect x="'+(i*w+w*.15)+'" y="'+(70-h)+'" width="'+w*.7+'" height="'+Math.max(h,1.5)+'" rx="3" style="fill:var(--bar);opacity:'+(i===mi&&o.v>0?1:.35)+'"/><text x="'+(i*w+w/2)+'" y="86" text-anchor="middle" font-size="8" style="fill:var(--mut)">'+o.l+'</text>';
+    if(i===mi&&o.v>0)s+='<text x="'+(i*w+w/2)+'" y="'+(66-h)+'" text-anchor="middle" font-size="9" font-weight="700" style="fill:var(--tx)">'+o.v+'</text>';});
+  s+='</svg>';
+  var seg='<div class="seg">'+[["d","Jours"],["w","Semaines"],["m","Mois"]].map(function(k){return'<button class="'+(GM===k[0]?"on":"")+'" data-g="'+k[0]+'">'+k[1]+'</button>'}).join("")+'</div>';
+  return seg+s+'<div class="mut">Total affiché : '+tot+' XP · meilleur : '+b[mi].l+'</div>';
+}
+function vPlay(c,r){var gx=Math.max(0,r.cur),gp=Math.min(100,gx/G*100),ok=r.cur>=G;var gh='<div class="card"><div class="tot"><span>🎯 Objectif du jour</span><b>'+gx+' / '+G+' XP'+(ok?' ✅':'')+'</b></div><div class="track"><div class="fill" style="width:'+gp+'%"></div></div><div class="seg" style="align-items:center;margin:0"><button data-gd="-10">−10</button><button data-gd="10">+10</button><span class="mut">'+(ok?'Objectif atteint, bravo !':'Encore '+(G-gx)+' XP')+'</span></div></div>';
+  var h=gh+'<div class="card"><div class="tot"><span>XP du jour (net)</span><b class="'+(r.cur<0?"neg":"")+'">'+(r.cur>0?"+":"")+r.cur+'</b></div><div class="tot"><span>Série 🔥</span><b>'+r.streak+' j'+(r.mult>1?" (×"+r.mult.toFixed(1)+")":"")+'</b></div><div class="tot"><span>Rebond 💪</span><b>+'+r.rb+'</b></div><div class="mut" style="margin-top:6px">La série multiplie tes gains, jamais tes retraits. Après une mauvaise journée, +15 XP de rebond dès que tu reprends.</div></div>';
+  h+='<div class="card"><div class="hd">🎁 Bonus du jour</div>'+BON.map(function(b){var ok=b[3](c);return'<div class="tot" style="opacity:'+(ok?1:.45)+'"><span>'+(ok?"✅":"🔒")+' '+b[1]+' '+b[0]+'</span><b>+'+b[2]+'</b></div>'}).join("")+'</div>';
+  var ch="";[["all","Tout"]].concat(CATS,[["neg","🔴 Retraits"],["done","✔ Fait"]]).forEach(function(k){ch+='<button class="chip'+(CAT===k[0]?" on":"")+'" data-k="'+k[0]+'">'+k[1]+'</button>'});
+  h+='<div class="chips">'+ch+'</div><div class="card">';
+  var any=false;
+  CATS.forEach(function(k){var rows="";
+    ITEMS.forEach(function(i){
+      if(i.c!==k[0])return;
+      if(CAT==="neg"&&i.x>=0)return;if(CAT==="done"&&!cn(c,i.id))return;if(CAT.length===1&&CAT!==i.c)return;
+      rows+='<div class="row"><span class="dot">'+i.e+'</span><div class="nm">'+i.n+'<small'+(i.x<0?' class="neg"':'')+'>'+(i.x>0?"+":"")+i.x+' XP'+(i.s?" · "+i.s:"")+'</small></div><div class="ctl"><button data-a="-" data-i="'+i.id+'">−</button><span class="n">'+cn(c,i.id)+'</span><button data-a="+" data-i="'+i.id+'">+</button></div></div>'});
+    if(rows){any=true;h+='<div class="hd">'+k[1]+'</div>'+rows}});
+  h+=(any?"":'<div class="mut">Rien ici pour l’instant.</div>')+'</div><div class="card"><button class="big" id="rs">Remettre aujourd’hui à zéro</button></div>';
+  return h;
+}
+function vStats(r){
+  var T=r.T,days=Object.keys(S).filter(function(d){return pos(S[d])+neg(S[d])!==0}).length;
+  var L=ITEMS.filter(function(i){return T[i.id]}).map(function(i){return{i:i,n:T[i.id]}});
+  var h='<div class="card"><div class="tot"><span>Jours actifs</span><b>'+days+'</b></div><div class="tot"><span>XP total</span><b>'+r.total+'</b></div><div class="tot"><span>Meilleure série</span><b>'+r.maxS+' j</b></div><div class="tot"><span>Objectifs atteints</span><b>'+Object.keys(r.by).filter(function(d){return r.by[d]>=G}).length+'</b></div></div>';
+  [["✅ Apports les plus faits",1],["🔴 Retraits les plus fréquents",-1]].forEach(function(g){
+    var a=L.filter(function(o){return g[1]>0?o.i.x>0:o.i.x<0}).sort(function(a,b){return b.n-a.n}).slice(0,10),m=a.length?a[0].n:1;
+    h+='<div class="card"><div class="hd">'+g[0]+'</div>'+(a.length?a.map(function(o){return'<div style="padding:5px 0"><div class="tot"><span>'+o.i.e+' '+o.i.n+'</span><b>'+o.n+'</b></div><div class="bw"><i class="'+(g[1]<0?"r":"")+'" style="width:'+o.n/m*100+'%"></i></div></div>'}).join(""):'<div class="mut">Pas encore de données.</div>')+'</div>'});
+  return h;
+}
+function vProfile(r){
+  var R=SK.map(function(k){var s=sumIds(r.T,k[3].filter(function(i){return 1})),sc=0;k[3].forEach(function(id){var it=ITEMS.filter(function(x){return x.id===id})[0];if(it)sc+=(r.T[id]||0)*it.x});var lv=Math.floor(Math.sqrt(Math.max(0,sc)/4));return{k:k,sc:sc,lv:lv,p:(Math.max(0,sc)-lv*lv*4)/(((lv+1)*(lv+1)-lv*lv)*4)}});
+  var top=R.slice().sort(function(a,b){return b.sc-a.sc})[0],low=R.slice().sort(function(a,b){return a.sc-b.sc})[0];
+  var h='<div class="card"><div class="hd">'+(top.sc>0?top.k[1]+' '+top.k[2]:'🥚 Personnage en création')+'</div><div class="mut">'+(top.sc>0?'Force principale : '+top.k[0]+'. ':'')+'À travailler : '+low.k[0]+'.</div></div><div class="card">';
+  R.forEach(function(o){h+='<div style="padding:6px 0"><div class="tot"><span>'+o.k[1]+' '+o.k[0]+'</span><b>Niv. '+o.lv+'</b></div><div class="bw"><i style="width:'+Math.min(100,o.p*100)+'%"></i></div></div>'});
+  return h+'</div>';
+}
+function vBadges(r){
+  var h="";
+  BAD.forEach(function(b){var v=sumIds(r.T,b[2]),t=-1;b[3].forEach(function(x,i){if(v>=x)t=i});
+    var nx=b[3][t+1];
+    h+='<div class="card"><div class="hd">'+b[1]+' '+b[0]+'</div><div>'+b[3].map(function(x,i){return'<span class="med t'+i+(v>=x?" on":"")+'">'+b[1]+'<small>'+x+'</small></span>'}).join("")+'</div><div style="margin-top:8px"><b>'+(t>=0?b[4][t]:"Verrouillé")+'</b></div><div class="mut">'+v+(nx?' / '+nx+' → '+b[4][t+1]:' · Niveau max atteint 🏆')+'</div></div>'});
+  var t2=-1,S2=[3,7,30,100,365],N2=["Début de Flamme","Semaine de Feu","Mois Brûlant","Phénix Constant","Soleil Éternel"];
+  S2.forEach(function(x,i){if(r.maxS>=x)t2=i});
+  h+='<div class="card"><div class="hd">🔥 Série</div><div>'+S2.map(function(x,i){return'<span class="med t'+i+(r.maxS>=x?" on":"")+'">🔥<small>'+x+'j</small></span>'}).join("")+'</div><div style="margin-top:8px"><b>'+(t2>=0?N2[t2]:"Verrouillé")+'</b></div><div class="mut">Meilleure série : '+r.maxS+' j'+(S2[t2+1]?' / '+S2[t2+1]:'')+'</div></div>';
+  return h;
+}
+function render(){
+  var c=S[today]=S[today]||{},r=calc();
+  var L=0;while(r.total>=th(L+1))L++;
+  var lv=L+1,rk=RANKS[0];RANKS.forEach(function(x){if(lv>=x[0])rk=x});
+  var lo=th(L),hi=th(L+1);
+  document.getElementById("head").innerHTML=chart(r.by)+'<div class="lvl" style="margin-top:10px"><b>Niv. '+lv+' · '+rk[2]+' '+rk[1]+'</b><span class="mut">'+r.total+' XP</span></div><div class="track"><div class="fill" style="width:'+((r.total-lo)/(hi-lo)*100)+'%"></div></div><div class="mut">'+(hi-r.total)+' XP avant le niveau '+(lv+1)+'</div>';
+  document.getElementById("tabs").innerHTML=[["play","🎮 Jouer"],["stats","📊 Stats"],["prof","🧙 Profil"],["bad","🏅 Badges"]].map(function(k){return'<button class="tab'+(TAB===k[0]?" on":"")+'" data-t="'+k[0]+'">'+k[1]+'</button>'}).join("");
+  document.getElementById("view").innerHTML=TAB==="play"?vPlay(c,r):TAB==="stats"?vStats(r):TAB==="prof"?vProfile(r):vBadges(r);
+}
+document.addEventListener("click",function(e){
+  var t=e.target,d=t.dataset||{};
+  if(t.id==="rs"){S[today]={};save();render();return}
+  if(d.t){TAB=d.t;render();return}
+  if(d.k){CAT=d.k;render();return}
+  if(d.g){GM=d.g;render();return}
+  if(d.gd){G=Math.max(10,G+(+d.gd));try{localStorage.setItem("xpg",G)}catch(e){}render();return}
+  if(!d.i)return;
+  var c=S[today]=S[today]||{},v=c[d.i]||0;
+  c[d.i]=Math.max(0,v+(d.a==="+"?1:-1));
+  save();render();
+});
+load();render();
+</script>
+</body>
+</html>
